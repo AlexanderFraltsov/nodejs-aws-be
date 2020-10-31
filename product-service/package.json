@@ -6,11 +6,14 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "deploy": "sls deploy",
-    "deploy:l:getAll": "sls deploy function -f getProducts",
-    "local:l:getAll": "sls invoke local -f getProducts"
+    "deploy:getAll": "sls deploy function -f getProductsList",
+    "deploy:getById": "sls deploy function -f getProductsById",
+    "local:getAll": "sls invoke local -f getProductsList",
+    "local:getById": "sls invoke local -f getProductsById"
   },
   "dependencies": {
-    "source-map-support": "^0.5.10"
+    "source-map-support": "^0.5.10",
+    "uuid": "^8.3.1"
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.17",
