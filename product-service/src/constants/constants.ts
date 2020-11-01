@@ -12,6 +12,11 @@ const MESSAGES: {[key: string] : string} = {
   INTERNAL_SERVER_ERROR: 'Internal Server Error'
 }
 
+const HEADERS: {[key: string]: any} = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Credentials': true,
+}
+
 const COMMON_PATH = 'https://media.rollerderbyhouse.eu/CommerceManager/Products/';
 
 export {
@@ -19,5 +24,6 @@ export {
   SPACES_IN_JSON,
   COMMON_PATH,
   STATUS_CODES,
-  MESSAGES
+  MESSAGES,
+  HEADERS
 }

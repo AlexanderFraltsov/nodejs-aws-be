@@ -1,7 +1,7 @@
 import { APIGatewayProxyHandler } from 'aws-lambda';
 import 'source-map-support/register';
 
-import { MESSAGES, SPACES_IN_JSON, STATUS_CODES } from '../constants/constants';
+import { HEADERS, MESSAGES, SPACES_IN_JSON, STATUS_CODES } from '../constants/constants';
 import { products } from '../mock-data/products';
 import { IProduct } from '../models/product.model';
 import { addDelay } from '../utils/add-delay';
@@ -18,6 +18,7 @@ export const getProductsById: APIGatewayProxyHandler = async (event) => {
 
   return {
     statusCode: STATUS_CODES.SUCCESS,
+    headers: HEADERS,
     body: JSON.stringify(product, null, SPACES_IN_JSON),
   };
 }
