@@ -31,5 +31,6 @@ const catchErrors = (
 
 export {
   catchErrors,
+  handleError,
   MyError
 }
