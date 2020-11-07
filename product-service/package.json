@@ -9,9 +9,11 @@
     "deploy:getAll": "sls deploy function -f getProductsList",
     "deploy:getById": "sls deploy function -f getProductsById",
     "local:getAll": "sls invoke local -f getProductsList",
-    "local:getById": "sls invoke local -f getProductsById"
+    "local:getById": "sls invoke local -f getProductsById",
+    "local:invoke": "sls invoke local -f invoke"
   },
   "dependencies": {
+    "@types/pg": "^7.14.6",
     "pg": "^8.4.2",
     "source-map-support": "^0.5.10",
     "uuid": "^8.3.1"

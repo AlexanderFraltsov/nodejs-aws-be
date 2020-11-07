@@ -75,6 +75,9 @@ const serverlessConfiguration: Serverless = {
           }
         }
       ]
+    },
+    invoke: {
+      handler: 'handler.invoke'
     }
   }
 }
