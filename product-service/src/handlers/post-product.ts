@@ -12,27 +12,34 @@ import { productValidate } from '../utils/product-validate';
 
 export const postProduct: APIGatewayProxyHandler = async (event) => {
 
-  console.log('Post product event: ', event);
+  const body = JSON.parse(event.body);
 
-  const product = productValidate(JSON.parse(event.body));
+  console.log('Post product event: ', event);
+  console.log('Product: ', body);
+
+  const product = productValidate(body);
+
+  if (!product) {
+    throw new MyError(STATUS_CODES.PRODUCT_NOT_FOUND, MESSAGES.PRODUCT_NOT_FOUND);
+  }
+
   let id: string;
 
   const client = new Client(DB_OPTIONS);
-  await client.connect(dbConnectCallback);
+  client.connect(dbConnectCallback);
 
   try {
+    await client.query('BEGIN');
     const insertedProduct = await client.query(DML.INSERT_PRODUCTS.TEXT, [product.title, product.description, product.price, product.image]);
     id = insertedProduct.rows[0].id;
     await client.query(DML.INSERT_STOCKS.TEXT, [id, product.count]);
+    await client.query('COMMIT');
   } catch (err) {
+    await client.query('ROLLBACK');
     throw new MyError(STATUS_CODES.INTERNAL_SERVER_ERROR, err.message);
   } finally {
     client.end();
     console.log('DB disconnected');
-  }
-
-  if (!product) {
-    throw new MyError(STATUS_CODES.PRODUCT_NOT_FOUND, MESSAGES.PRODUCT_NOT_FOUND);
   }
 
   return {

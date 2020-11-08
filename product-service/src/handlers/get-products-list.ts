@@ -15,7 +15,7 @@ export const getProductsList: APIGatewayProxyHandler = async (
   console.log('Get list event: ', event);
 
   const client = new Client(DB_OPTIONS);
-  await client.connect(dbConnectCallback);
+  client.connect(dbConnectCallback);
 
   let result;
 

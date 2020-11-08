@@ -14,7 +14,7 @@ export const getProductsById: APIGatewayProxyHandler = async (event) => {
   console.log('Get product event: ', event);
 
   const client = new Client(DB_OPTIONS);
-  await client.connect(dbConnectCallback);
+  client.connect(dbConnectCallback);
 
   let result;
 
@@ -27,7 +27,7 @@ export const getProductsById: APIGatewayProxyHandler = async (event) => {
     console.log('DB disconnected');
   }
 
-  const product = result.rows;
+  const product = result.rows[0];
 
   if (!product || product.length === 0) {
     throw new MyError(STATUS_CODES.PRODUCT_NOT_FOUND, MESSAGES.PRODUCT_NOT_FOUND);
