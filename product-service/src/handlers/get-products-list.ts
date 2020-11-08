@@ -1,5 +1,6 @@
-import { APIGatewayProxyEvent } from 'aws-lambda';
+import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import { APIGatewayProxyHandler } from 'aws-lambda';
+import { Client } from 'pg';
 import 'source-map-support/register';
 
 import { DB_OPTIONS } from '../../db/constants';
@@ -8,11 +9,9 @@ import { DML } from '../../db/queries';
 import { HEADERS, SPACES_IN_JSON, STATUS_CODES } from '../constants/constants';
 import { MyError } from '../utils/error';
 
-const { Client } = require('pg');
-
 export const getProductsList: APIGatewayProxyHandler = async (
   event: APIGatewayProxyEvent
-) => {
+): Promise<APIGatewayProxyResult> => {
   console.log('Get list event: ', event);
 
   const client = new Client(DB_OPTIONS);

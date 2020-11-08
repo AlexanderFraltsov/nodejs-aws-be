@@ -76,9 +76,21 @@ const serverlessConfiguration: Serverless = {
         }
       ]
     },
-    invoke: {
+    postProduct: {
+      handler: 'handler.postProduct',
+      events: [
+        {
+          http: {
+            method: 'post',
+            path: 'products',
+            cors: true
+          }
+        }
+      ]
+    },
+    /*invoke: {
       handler: 'handler.invoke'
-    }
+    }*/
   }
 }
 

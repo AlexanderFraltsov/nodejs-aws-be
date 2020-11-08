@@ -1,8 +1,8 @@
+import { Client } from 'pg';
 import { DB_OPTIONS, MESSAGES } from './constants';
 import { dbConnectCallback } from './db-connect-cb';
-import { DML, DDL } from './queries';
+import { DML, /*DDL*/ } from './queries';
 
-const { Client } = require('pg');
 
 const connectToDbAndInvoke = async (queries) => {
   const client = new Client(DB_OPTIONS);
@@ -23,6 +23,10 @@ const connectToDbAndInvoke = async (queries) => {
 }
 
 const invoke = async () => {
+
+  await connectToDbAndInvoke([
+    [DML.SELECT_ALL],
+  ]);
 
   /* TO CREATE TABLES
   await connectToDbAndInvoke([

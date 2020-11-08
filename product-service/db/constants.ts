@@ -10,7 +10,7 @@ const CONNECTION_TIMEOUT_MS = 5000;
 
 const DB_OPTIONS = {
   host: PG_HOST,
-  port: PG_PORT,
+  port: +PG_PORT,
   database: PG_DATABASE,
   user: PG_USERNAME,
   password: PG_PASSWORD,

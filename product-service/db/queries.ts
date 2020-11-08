@@ -29,7 +29,8 @@ const DDL = {
 const DML = {
   INSERT_PRODUCTS: {
     TEXT: `INSERT INTO products(title, description, price, image)
-      VALUES($1, $2, $3, $4) RETURNING *`,
+      VALUES($1, $2, $3, $4) RETURNING *
+    `,
     TEST_VALUES_1: [
       'CHAYA Lifestyle Melrose Elite Love is Love',
       SKATE_TYPES.RETRO,
@@ -45,10 +46,25 @@ const DML = {
   },
   INSERT_STOCKS: {
     TEXT: `INSERT INTO stocks(product_id, count)
-      VALUES($1, $2) RETURNING *`
+      VALUES($1, $2) RETURNING *
+    `
   },
   SELECT_ALL: {
-    TEXT: `SELECT p.id, p.description, p.price, p.title, p.image, s.count FROM products p LEFT JOIN stocks s ON p.id=s.product_id`
+    TEXT: `
+      SELECT p.id, p.description, p.price, p.title, p.image, s.count
+      FROM products p
+      LEFT JOIN stocks s
+      ON p.id=s.product_id
+    `
+  },
+  SELECT_ONE: {
+    TEXT: `
+      SELECT p.id, p.description, p.price, p.title, p.image, s.count
+      FROM products p
+      LEFT JOIN stocks s
+      ON p.id=s.product_id
+      WHERE p.id=$1
+    `
   }
 }
 

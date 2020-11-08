@@ -4,9 +4,10 @@ export enum SKATE_TYPES {
 }
 
 export interface IProduct {
-  id: string;
+  id?: string;
   title: string;
-  description: SKATE_TYPES;
+  description?: SKATE_TYPES;
   price: number;
-  image: string;
+  image?: string;
+  count?: number;
 }
