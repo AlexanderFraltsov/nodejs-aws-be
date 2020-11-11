@@ -1,8 +1,13 @@
+export enum SKATE_TYPES {
+  DERBY = 'Roller derby skates',
+  RETRO = 'Retro Skates & Disco Roller'
+}
+
 export interface IProduct {
-  id: string;
+  id?: string;
   title: string;
-  type: 'Roller derby skates' | 'Retro Skates & Disco Roller';
+  description?: SKATE_TYPES;
   price: number;
-  count: number;
-  image: string;
+  image?: string;
+  count?: number;
 }
