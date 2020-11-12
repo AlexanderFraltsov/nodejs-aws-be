@@ -1,9 +1,8 @@
 import { mockEventCreator } from 'aws-lambda-test-utils';
 
 import { getProductsById } from '../../handler';
-import { HEADERS, MESSAGES, SPACES_IN_JSON, STATUS_CODES } from '../constants/constants';
-import { products } from '../mock-data/products';
-
+import { MESSAGES, STATUS_CODES } from '../constants/constants';
+/*
 it('It should get product by ID', async () => {
   expect.assertions(1);
 
@@ -23,7 +22,7 @@ it('It should get product by ID', async () => {
 
   const data = await getProductsById(APIGatewayEvent);
   expect(data).toEqual(output)
-});
+});*/
 
 it('It should get 404 error by invalide ID', async () => {
   expect.assertions(1);

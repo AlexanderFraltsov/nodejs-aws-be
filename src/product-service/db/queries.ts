@@ -1,5 +1,4 @@
-import { COMMON_PATH } from "../src/constants/constants"
-import { SKATE_TYPES } from "../src/models/product.model"
+import { COMMON_PATH } from '../src/constants/constants';
 
 const DDL = {
   CREATE_UUID: `CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`,
@@ -33,13 +32,13 @@ const DML = {
     `,
     TEST_VALUES_1: [
       'CHAYA Lifestyle Melrose Elite Love is Love',
-      SKATE_TYPES.RETRO,
+      'Retro Skates & Disco Roller',
       160,
       `${COMMON_PATH}1591/product_1591_5f9058d0760b7_medium.jpg`
     ],
     TEST_VALUES_2: [
       'RIEDELL Torch Neo',
-      SKATE_TYPES.DERBY,
+      'Roller derby skates',
       625,
       `${COMMON_PATH}1269/product_1269_5a3a6e1e95fd2_medium.jpg`
     ]
