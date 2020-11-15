@@ -15,32 +15,40 @@ export const importFileParser = async (event: S3Event) => {
       Key: key
     }).createReadStream();
 
-    await new Promise((res,rej) => {
-      s3Stream.pipe(csv())
-        .on('data', (data) => {
-          console.log(data);
-        })
-        .on('error', (error) => {
-          rej(error);
-        })
-        .on('end', async () => {
-          console.log(`Copy from ${BUCKET}/${key}`);
+    try {
+      await new Promise((res,rej) => {
+        s3Stream.pipe(csv())
+          .on('data', (data) => {
+            console.log(data);
+          })
+          .on('error', (error) => {
+            rej(error);
+          })
+          .on('end', async () => {
+            console.log(`Copy from ${BUCKET}/${key}`);
 
-          await s3.copyObject({
-            Bucket: BUCKET,
-            CopySource: `${BUCKET}/${key}`,
-            Key: key.replace('uploaded', 'parsed')
-          }).promise();
+            await s3.copyObject({
+              Bucket: BUCKET,
+              CopySource: `${BUCKET}/${key}`,
+              Key: key.replace('uploaded', 'parsed')
+            }).promise();
 
-          console.log(`${key.split('/')[1]} was copied`);
-          res();
-          // await s3.deleteObject({
-          //   Bucket: BUCKET,
-          //   Key: key
-          // }).promise();
-        })
-    })
+            console.log(`${key.split('/')[1]} was copied to parsed/`);
+            await s3.deleteObject({
+              Bucket: BUCKET,
+              Key: key
+            }).promise();
+            console.log(`${key.split('/')[1]} was deleted from uploaded/`);
 
+            res();
+          })
+      })
+    } catch (error) {
+      return {
+        statusCode: 500,
+        message: error.message
+      }
+    }
   }
 
   return {

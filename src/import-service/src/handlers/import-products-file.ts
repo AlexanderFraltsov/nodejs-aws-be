@@ -9,10 +9,8 @@ export const importProductsFile: APIGatewayProxyHandler = async (
   _context
 ): Promise<APIGatewayProxyResult> => {
   console.log(event);
-  const {name} = event.queryStringParameters;
-  console.log(name);
+  const { name } = event.queryStringParameters;
   const path = `uploaded/${name}`;
-  console.log(path);
 
   const s3 = new S3({ region: 'eu-west-1'});
   const params = {
@@ -25,7 +23,7 @@ export const importProductsFile: APIGatewayProxyHandler = async (
   return await new Promise((res, rej) => {
     s3.getSignedUrl('putObject', params, (err, url) => {
       if (err) {
-        return rej({
+        rej({
           statusCode: 500,
           body: err.message
         });
