@@ -4,6 +4,29 @@ import { S3Event } from 'aws-lambda';
 
 import { BUCKET } from '../constants';
 
+const copyObject = async (client, key: string) => {
+  console.log(`Copy from ${BUCKET}/${key}`);
+  const params = {
+    Bucket: BUCKET,
+    CopySource: `${BUCKET}/${key}`,
+    Key: key.replace('uploaded', 'parsed')
+  }
+
+  const result = await client.copyObject(params).promise();
+  console.log(`${key.split('/')[1]} was copied to parsed/`);
+  return result;
+}
+
+const deleteObject = async (client, key: string) => {
+  const params = {
+    Bucket: BUCKET,
+    Key: key
+  }
+  const result =  await client.deleteObject(params).promise();
+  console.log(`${key.split('/')[1]} was deleted from uploaded/`);
+  return result;
+}
+
 export const importFileParser = async (event: S3Event) => {
   const s3 = new S3({ region: 'eu-west-1'});
 
@@ -25,21 +48,8 @@ export const importFileParser = async (event: S3Event) => {
             rej(error);
           })
           .on('end', async () => {
-            console.log(`Copy from ${BUCKET}/${key}`);
-
-            await s3.copyObject({
-              Bucket: BUCKET,
-              CopySource: `${BUCKET}/${key}`,
-              Key: key.replace('uploaded', 'parsed')
-            }).promise();
-
-            console.log(`${key.split('/')[1]} was copied to parsed/`);
-            await s3.deleteObject({
-              Bucket: BUCKET,
-              Key: key
-            }).promise();
-            console.log(`${key.split('/')[1]} was deleted from uploaded/`);
-
+            await copyObject(s3, key);
+            await deleteObject(s3, key);
             res();
           })
       })
