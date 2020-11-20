@@ -1,4 +1,3 @@
-import { APIGatewayProxyEvent, APIGatewayProxyHandler } from "aws-lambda";
 import { STATUS_CODES } from "../constants/constants";
 
 class MyError {
@@ -19,11 +18,9 @@ const handleError = (err: any) => {
   }
 }
 
-const catchErrors = (
-  fn: APIGatewayProxyHandler
-) => async (event?:  APIGatewayProxyEvent) => {
+const catchErrors = (fn) => async (event, context) => {
   try {
-    return await fn(event, null, null);
+    return await fn(event, context);
   } catch (err) {
     return handleError(err);
   }

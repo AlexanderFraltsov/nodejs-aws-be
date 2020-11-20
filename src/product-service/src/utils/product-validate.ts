@@ -1,8 +1,8 @@
 import { MESSAGES, STATUS_CODES, COMMON_PATH } from '../constants/constants';
-import { IProduct, SKATE_TYPES } from '../models/product.model';
+import { IProduct } from '../models/product.model';
 import { MyError } from './error';
 
-export const productValidate = (product): IProduct => {
+export const productValidate = (product: IProduct): IProduct => {
   const { description, count, title, price, image } = product;
 
   if (!count || typeof +count !== "number") {
@@ -17,17 +17,14 @@ export const productValidate = (product): IProduct => {
     throw new MyError(STATUS_CODES.PRODUCT_DATA_IS_INVALID, `${MESSAGES.PRODUCT_DATA_IS_INVALID}: price`);
   }
 
-  const validatingProduct = { ...product };
-
-  if ( !description ||
-    description !== SKATE_TYPES.DERBY ||
-    description !== SKATE_TYPES.RETRO ) {
-    validatingProduct.description = SKATE_TYPES.DERBY
+  if ( !description || typeof description !== "string" ) {
+    throw new MyError(STATUS_CODES.PRODUCT_DATA_IS_INVALID, `${MESSAGES.PRODUCT_DATA_IS_INVALID}: description`);
   }
 
   if (!image || typeof image !== "string") {
-    validatingProduct.image = `${COMMON_PATH}1269/product_1269_5a3a6e1e95fd2_medium.jpg`;
+    const mockImage = `${COMMON_PATH}1269/product_1269_5a3a6e1e95fd2_medium.jpg`;
+    return { ...product, image: mockImage }
   }
 
-  return validatingProduct;
+  return product;
 }
