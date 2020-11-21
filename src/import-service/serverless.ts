@@ -23,6 +23,9 @@ const serverlessConfiguration: Serverless = {
     },
     environment: {
       AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1',
+      SQS_URL: {
+        Ref: 'SQSQueue'
+      }
     },
     iamRoleStatements: [
       {
@@ -38,8 +41,30 @@ const serverlessConfiguration: Serverless = {
         Resource: [
           'arn:aws:s3:::rsschool-node-in-aws-s3-fraltsov/*'
         ]
+      },
+      {
+        Effect: 'Allow',
+        Action: ['sqs:*'],
+        Resource: [
+          {
+            'Fn::GetAtt': [
+              'SQSQueue',
+              'Arn'
+            ]
+          }
+        ]
       }
     ]
+  },
+  resources: {
+    Resources: {
+      SQSQueue: {
+        Type: 'AWS::SQS::Queue',
+        Properties: {
+          QueueName: 'rsschool-node-in-aws-s3-fraltsov-queue'
+        }
+      }
+    }
   },
   functions: {
     importProductsFile: {
@@ -72,9 +97,36 @@ const serverlessConfiguration: Serverless = {
             rules: [
               {
                 prefix: 'uploaded/',
-                suffix: ''
+                suffix: '.csv'
               }
             ]
+          }
+        }
+      ]
+    },
+    catalogBatchProcess: {
+      handler: 'handler.catalogBatchProcess',
+      events: [
+        {
+          http: {
+            path: 'users',
+            method: 'post'
+          }
+        }
+      ]
+    },
+    catalogItemsQueue: {
+      handler: 'handler.catalogItemsQueue',
+      events: [
+        {
+          sqs: {
+            batchSize: 2,
+            arn: {
+              'Fn::GetAtt': [
+                'SQSQueue',
+                'Arn'
+              ]
+            }
           }
         }
       ]

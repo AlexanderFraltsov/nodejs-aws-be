@@ -1,4 +1,6 @@
 export {
   importProductsFile,
-  importFileParser
+  importFileParser,
+  catalogItemsQueue,
+  catalogBatchProcess
 } from './src/handlers';
