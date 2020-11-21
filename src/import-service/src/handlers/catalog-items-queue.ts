@@ -1,7 +1,7 @@
 import 'source-map-support/register';
 
-import { HEADERS } from "../constants";
 import { simpleQueueService } from "../services/sqs.service";
+import { httpResponse } from '../utils/http-response';
 
 export const catalogItemsQueue = (event, _context, callback) => {
   console.log(event);
@@ -12,15 +12,8 @@ export const catalogItemsQueue = (event, _context, callback) => {
       simpleQueueService.sendMessage(message)
     })
   } catch (error) {
-    callback(null, {
-      statusCode: 500,
-      headers: HEADERS
-    })
+    callback(null, httpResponse(500, null))
   }
 
-
-  callback(null, {
-    statusCode: 200,
-    headers: HEADERS
-  })
+  callback(null, httpResponse(200, null))
 }
