@@ -1,4 +1,5 @@
 import type { Serverless } from 'serverless/aws';
+import { PATHES } from '../common/constants';
 
 const serverlessConfiguration: Serverless = {
   service: {
@@ -23,12 +24,7 @@ const serverlessConfiguration: Serverless = {
     },
     environment: {
       AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1',
-      SQS_URL: {
-        Ref: 'SQSQueue'
-      },
-      SNS_ARN: {
-        Ref: 'SNSTopic'
-      }
+      SQS_URL: '${cf:product-service-${self:provider.stage}.SQSQueueUrl}'
     },
     iamRoleStatements: [
       {
@@ -47,39 +43,12 @@ const serverlessConfiguration: Serverless = {
       },
       {
         Effect: 'Allow',
-        Action: ['sqs:*'],
+        Action: ['sqs:SendMessage'],
         Resource: [
           '${cf:product-service-${self:provider.stage}.SQSQueueArn}'
         ]
-      },
-      {
-        Effect: 'Allow',
-        Action: ['sns:*'],
-        Resource: {
-          Ref: 'SNSTopic'
-        }
       }
     ]
-  },
-  resources: {
-    Resources: {
-      SNSTopic: {
-        Type: 'AWS::SNS::Topic',
-        Properties: {
-          TopicName: 'create-product-topic'
-        }
-      },
-      SNSSubscription: {
-        Type: 'AWS::SNS::Subscription',
-        Properties: {
-          Endpoint: '---@gmail.com',
-          Protocol: 'email',
-          TopicArn: {
-            Ref: 'SNSTopic'
-          }
-        }
-      }
-    }
   },
   functions: {
     importProductsFile: {
@@ -111,7 +80,7 @@ const serverlessConfiguration: Serverless = {
             existing: true,
             rules: [
               {
-                prefix: 'uploaded/',
+                prefix: `${PATHES.UPLOADED}/`,
                 suffix: '.csv'
               }
             ]

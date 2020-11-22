@@ -1,4 +1,4 @@
-import { MESSAGES, STATUS_CODES, COMMON_PATH } from '../constants/constants';
+import { MESSAGES, STATUS_CODES, COMMON_PATH } from '../../../common/constants';
 import { IProduct } from '../models/product.model';
 import { MyError } from './error';
 

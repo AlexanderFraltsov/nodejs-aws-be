@@ -1,4 +1,4 @@
-import { COMMON_PATH } from '../src/constants/constants';
+import { COMMON_PATH } from '../../common/constants';
 
 const DDL = {
   CREATE_UUID: `CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`,

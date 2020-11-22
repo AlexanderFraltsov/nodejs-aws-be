@@ -1,7 +1,7 @@
 import { mockEventCreator } from 'aws-lambda-test-utils';
 
 import { getProductsById } from '../../handler';
-import { MESSAGES, STATUS_CODES } from '../constants/constants';
+import { MESSAGES, STATUS_CODES } from '../../../common/constants';
 /*
 it('It should get product by ID', async () => {
   expect.assertions(1);

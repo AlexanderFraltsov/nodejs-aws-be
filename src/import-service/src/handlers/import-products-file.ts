@@ -3,6 +3,7 @@ import 'source-map-support/register';
 
 import { simpleStorageService } from '../services/s3.service';
 import { httpResponse } from '../../../utils/http-response';
+import { PATHES, STATUS_CODES } from '../../../common/constants';
 
 export const importProductsFile: APIGatewayProxyHandler = async (
   event,
@@ -13,13 +14,13 @@ export const importProductsFile: APIGatewayProxyHandler = async (
   try {
     const { name } = event.queryStringParameters;
     if (!name) {
-      return httpResponse(400, 'Bad request');
+      return httpResponse(STATUS_CODES.PRODUCT_DATA_IS_INVALID, 'Bad request');
     }
-    const path = `uploaded/${name}`;
+    const path = `${PATHES.UPLOADED}/${name}`;
     const url = await simpleStorageService.getSignedUrl(path);
 
-    return httpResponse(200, url);
+    return httpResponse(STATUS_CODES.SUCCESS, url);
   } catch (err) {
-    return httpResponse(500, err.message);
+    return httpResponse(STATUS_CODES.INTERNAL_SERVER_ERROR, err.message);
   }
 }

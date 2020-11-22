@@ -4,7 +4,7 @@ import 'source-map-support/register';
 
 import { createClient } from '../../db/client';
 import { DML } from '../../db/queries';
-import { HEADERS, SPACES_IN_JSON, STATUS_CODES } from '../constants/constants';
+import { HEADERS, SPACES_IN_JSON, STATUS_CODES } from '../../../common/constants';
 import { MyError, catchErrors } from '../utils/error';
 
 export const getProductsList: APIGatewayProxyHandler = catchErrors(

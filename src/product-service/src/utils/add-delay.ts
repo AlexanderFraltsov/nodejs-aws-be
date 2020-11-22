@@ -1,4 +1,4 @@
-import { DELAY_MS } from "../constants/constants";
+import { DELAY_MS } from "../../../common/constants";
 
 export const addDelay = async (result: any) => {
   return new Promise(

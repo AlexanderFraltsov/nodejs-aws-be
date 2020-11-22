@@ -1,6 +1,6 @@
 import S3 from 'aws-sdk/clients/s3';
 
-import { AWS_CONFIG } from '../../../common/constants';
+import { AWS_CONFIG, PATHES } from '../../../common/constants';
 
 class S3Service {
   private client = new S3({ region: AWS_CONFIG.REGION });
@@ -30,11 +30,11 @@ class S3Service {
     const params = {
       Bucket: AWS_CONFIG.BUCKET,
       CopySource: `${AWS_CONFIG.BUCKET}/${key}`,
-      Key: key.replace('uploaded', 'parsed')
+      Key: key.replace(PATHES.UPLOADED, PATHES.PARSED)
     }
 
     const result = await this.client.copyObject(params).promise();
-    console.log(`${key.split('/')[1]} was copied to parsed/`);
+    console.log(`${key.split('/')[1]} was copied to ${PATHES.PARSED}/`);
     return result;
   }
 
@@ -44,7 +44,7 @@ class S3Service {
       Key: key
     }
     const result =  await this.client.deleteObject(params).promise();
-    console.log(`${key.split('/')[1]} was deleted from uploaded/`);
+    console.log(`${key.split('/')[1]} was deleted from ${PATHES.UPLOADED}/`);
     return result;
   }
 }
