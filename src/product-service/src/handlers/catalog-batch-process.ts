@@ -1,35 +1,26 @@
+import { SQSEvent, SQSHandler } from 'aws-lambda';
 import 'source-map-support/register';
-/*
-import { simpleQueueService } from "../../services/sqs.service";
-import { httpResponse } from '../../../utils/http-response';
-*/
-export const catalogBatchProcess = (event, _context, _callback) => {
+
+import { createProduct } from '../../db/create-product';
+import { simpleNotificationService } from '../services/sns.service';
+import { productValidate } from '../utils/product-validate';
+
+export const catalogBatchProcess: SQSHandler = async (event: SQSEvent) => {
   try {
     console.log(event);
-    const records = event.Records.map(({body}) => body);
-    console.log(records);
+    const products = event.Records
+      .map(({body}) => JSON.parse(body))[0];
+
+    console.log(products);
+    for (const product of products) {
+      const createdProduct = await createProduct(
+        productValidate(product),
+        (err) => { throw new Error(err.message) }
+      );
+
+      await simpleNotificationService.publish(createdProduct);
+    }
   } catch(err) {
     console.error(err);
   }
-
-/*  try {
-    const messages = JSON.parse(event.body);
-
-    messages.forEach(message => {
-      simpleQueueService.sendMessage(message)
-    })
-  } catch (error) {
-    callback(null, httpResponse(500, null))
-  }
-
-  callback(null, httpResponse(200, null))
-  */
-/*  try {
-    const messages = event.Records.map(({ body }) => body);
-    simpleNotificationService.publish(messages);
-    return httpResponse(202, JSON.stringify(messages));
-  } catch (error) {
-    return httpResponse(500, error.message);
-  }
-  */
 }

@@ -1,19 +1,17 @@
 import { SNS } from 'aws-sdk';
 
-import { AWS_CONFIG } from '../../../common/constants';
+import { AWS_CONFIG, SPACES_IN_JSON } from '../../../common/constants';
 
 class SNSService {
   private client = new SNS({ region: AWS_CONFIG.REGION });
 
-  public async publish(messages: string[]) {
+  public async publish(product) {
     const params = {
-      Subject: 'You are invited processed',
-      Message: JSON.stringify(messages),
+      Subject: 'Product created',
+      Message: JSON.stringify(product, null, SPACES_IN_JSON),
       TopicArn: process.env.SNS_ARN
     }
-    return this.client.publish(params, () => {
-      console.log('Send email: ' + JSON.stringify(messages))
-    });
+    return await this.client.publish(params).promise();
   }
 }
 
