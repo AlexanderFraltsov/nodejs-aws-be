@@ -14,7 +14,7 @@ export const importFileParser = async (event: S3Event) => {
     const result = [];
     try {
       const products = await new Promise((res,rej) => {
-        s3Stream.pipe(csv())
+        s3Stream.pipe(csv({ separator: ';' }))
           .on('data', (data) => {
             console.log(data);
             result.push(data);
