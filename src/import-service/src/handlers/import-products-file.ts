@@ -2,7 +2,7 @@ import { APIGatewayProxyHandler, APIGatewayProxyResult } from 'aws-lambda';
 import 'source-map-support/register';
 
 import { simpleStorageService } from '../services/s3.service';
-import { httpResponse } from '../utils/http-response';
+import { httpResponse } from '../../../utils/http-response';
 
 export const importProductsFile: APIGatewayProxyHandler = async (
   event,

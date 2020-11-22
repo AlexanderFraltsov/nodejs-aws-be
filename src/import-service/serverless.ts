@@ -25,6 +25,9 @@ const serverlessConfiguration: Serverless = {
       AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1',
       SQS_URL: {
         Ref: 'SQSQueue'
+      },
+      SNS_ARN: {
+        Ref: 'SNSTopic'
       }
     },
     iamRoleStatements: [
@@ -46,22 +49,34 @@ const serverlessConfiguration: Serverless = {
         Effect: 'Allow',
         Action: ['sqs:*'],
         Resource: [
-          {
-            'Fn::GetAtt': [
-              'SQSQueue',
-              'Arn'
-            ]
-          }
+          '${cf:product-service-${self:provider.stage}.SQSQueueArn}'
         ]
+      },
+      {
+        Effect: 'Allow',
+        Action: ['sns:*'],
+        Resource: {
+          Ref: 'SNSTopic'
+        }
       }
     ]
   },
   resources: {
     Resources: {
-      SQSQueue: {
-        Type: 'AWS::SQS::Queue',
+      SNSTopic: {
+        Type: 'AWS::SNS::Topic',
         Properties: {
-          QueueName: 'rsschool-node-in-aws-s3-fraltsov-queue'
+          TopicName: 'create-product-topic'
+        }
+      },
+      SNSSubscription: {
+        Type: 'AWS::SNS::Subscription',
+        Properties: {
+          Endpoint: '---@gmail.com',
+          Protocol: 'email',
+          TopicArn: {
+            Ref: 'SNSTopic'
+          }
         }
       }
     }
@@ -100,33 +115,6 @@ const serverlessConfiguration: Serverless = {
                 suffix: '.csv'
               }
             ]
-          }
-        }
-      ]
-    },
-    catalogBatchProcess: {
-      handler: 'handler.catalogBatchProcess',
-      events: [
-        {
-          http: {
-            path: 'users',
-            method: 'post'
-          }
-        }
-      ]
-    },
-    catalogItemsQueue: {
-      handler: 'handler.catalogItemsQueue',
-      events: [
-        {
-          sqs: {
-            batchSize: 2,
-            arn: {
-              'Fn::GetAtt': [
-                'SQSQueue',
-                'Arn'
-              ]
-            }
           }
         }
       ]

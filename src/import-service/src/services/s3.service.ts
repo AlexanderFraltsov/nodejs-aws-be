@@ -1,6 +1,6 @@
 import S3 from 'aws-sdk/clients/s3';
 
-import { AWS_CONFIG } from '../constants';
+import { AWS_CONFIG } from '../../../common/constants';
 
 class S3Service {
   private client = new S3({ region: AWS_CONFIG.REGION });
