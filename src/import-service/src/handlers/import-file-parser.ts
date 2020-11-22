@@ -6,6 +6,7 @@ import { simpleStorageService } from '../services/s3.service';
 import { simpleQueueService } from '../services/sqs.service';
 
 export const importFileParser = async (event: S3Event) => {
+  console.log(event);
 
   for (const record of event.Records) {
     const { key } = record.s3.object;
@@ -28,7 +29,7 @@ export const importFileParser = async (event: S3Event) => {
           })
       })
       console.log(products);
-      simpleQueueService.sendMessage(products);
+      await simpleQueueService.sendMessage(products);
     } catch (error) {
       return {
         statusCode: STATUS_CODES.INTERNAL_SERVER_ERROR,
