@@ -1,15 +1,18 @@
+import { APIGatewayTokenAuthorizerHandler } from 'aws-lambda';
 import 'source-map-support/register';
 
 import { authorizationTokenEncoder, generatePolicy } from '../utils';
 
 const UNAUTH = 'Unauthorized';
 
-export const basicAuthorizer = (event, context, callback) => {
+export const basicAuthorizer: APIGatewayTokenAuthorizerHandler = async (
+  event
+) => {
 
   console.log("Event: ", JSON.stringify(event));
 
   if (event['type'] !== 'TOKEN') {
-    callback(UNAUTH);
+    throw new Error(UNAUTH);
   }
 
   try {
@@ -23,13 +26,16 @@ export const basicAuthorizer = (event, context, callback) => {
 
     const storedUserPassword = process.env[username];
 
-    const effect = !storedUserPassword ||
-      storedUserPassword !== password ? 'Deny' : 'Allow';
+    if (!storedUserPassword || storedUserPassword !== password){
+      const effect = 'Deny';
+      const message = 'Error: Access denied. This login-password pair is wrong';
+      return generatePolicy(encodedCreds, event.methodArn, effect, message);
+    }
 
-    const policy = generatePolicy(encodedCreds, event.methodArn, effect);
+    return generatePolicy(encodedCreds, event.methodArn);
 
-    callback(null, policy);
   } catch (e) {
-    callback(`${UNAUTH}: ${e.message}`);
+    console.error(e);
+    throw new Error(e.message);
   }
 }
