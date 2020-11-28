@@ -1,4 +1,4 @@
-import { STATUS_CODES } from "../constants/constants";
+import { STATUS_CODES } from '../../../common/constants';
 
 class MyError {
   public statusCode: number;

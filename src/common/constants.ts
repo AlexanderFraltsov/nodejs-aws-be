@@ -19,6 +19,18 @@ const HEADERS: {[key: string]: any} = {
   'Access-Control-Allow-Credentials': true,
 }
 
+const BUCKET = `rsschool-node-in-aws-s3-fraltsov`;
+
+const AWS_CONFIG = {
+  REGION: 'eu-west-1',
+  BUCKET: BUCKET
+}
+
+const PATHES = {
+  UPLOADED: 'uploaded',
+  PARSED: 'parsed'
+}
+
 const COMMON_PATH = 'https://media.rollerderbyhouse.eu/CommerceManager/Products/';
 
 export {
@@ -27,5 +39,7 @@ export {
   COMMON_PATH,
   STATUS_CODES,
   MESSAGES,
-  HEADERS
+  HEADERS,
+  AWS_CONFIG,
+  PATHES
 }

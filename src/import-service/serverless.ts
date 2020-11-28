@@ -1,4 +1,5 @@
 import type { Serverless } from 'serverless/aws';
+import { PATHES } from '../common/constants';
 
 const serverlessConfiguration: Serverless = {
   service: {
@@ -23,6 +24,7 @@ const serverlessConfiguration: Serverless = {
     },
     environment: {
       AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1',
+      SQS_URL: '${cf:product-service-${self:provider.stage}.SQSQueueUrl}'
     },
     iamRoleStatements: [
       {
@@ -37,6 +39,13 @@ const serverlessConfiguration: Serverless = {
         Action: ['s3:*'],
         Resource: [
           'arn:aws:s3:::rsschool-node-in-aws-s3-fraltsov/*'
+        ]
+      },
+      {
+        Effect: 'Allow',
+        Action: ['sqs:SendMessage'],
+        Resource: [
+          '${cf:product-service-${self:provider.stage}.SQSQueueArn}'
         ]
       }
     ]
@@ -71,8 +80,8 @@ const serverlessConfiguration: Serverless = {
             existing: true,
             rules: [
               {
-                prefix: 'uploaded/',
-                suffix: ''
+                prefix: `${PATHES.UPLOADED}/`,
+                suffix: '.csv'
               }
             ]
           }

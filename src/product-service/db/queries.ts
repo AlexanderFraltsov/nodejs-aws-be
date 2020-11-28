@@ -1,5 +1,3 @@
-import { COMMON_PATH } from '../src/constants/constants';
-
 const DDL = {
   CREATE_UUID: `CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`,
   CREATE_TABLE: {
@@ -27,20 +25,18 @@ const DDL = {
 
 const DML = {
   INSERT_PRODUCTS: {
-    TEXT: `INSERT INTO products(title, description, price, image)
-      VALUES($1, $2, $3, $4) RETURNING *
+    TEXT: `INSERT INTO products(title, description, price)
+      VALUES($1, $2, $3) RETURNING *
     `,
     TEST_VALUES_1: [
       'CHAYA Lifestyle Melrose Elite Love is Love',
       'Retro Skates & Disco Roller',
-      160,
-      `${COMMON_PATH}1591/product_1591_5f9058d0760b7_medium.jpg`
+      160
     ],
     TEST_VALUES_2: [
       'RIEDELL Torch Neo',
       'Roller derby skates',
-      625,
-      `${COMMON_PATH}1269/product_1269_5a3a6e1e95fd2_medium.jpg`
+      625
     ]
   },
   INSERT_STOCKS: {

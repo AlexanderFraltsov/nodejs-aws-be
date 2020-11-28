@@ -1,41 +1,26 @@
 import { APIGatewayProxyHandler, APIGatewayProxyResult } from 'aws-lambda';
-import S3 from 'aws-sdk/clients/s3';
 import 'source-map-support/register';
 
-import { BUCKET } from '../constants';
+import { simpleStorageService } from '../services/s3.service';
+import { httpResponse } from '../../../utils/http-response';
+import { PATHES, STATUS_CODES } from '../../../common/constants';
 
 export const importProductsFile: APIGatewayProxyHandler = async (
   event,
   _context
 ): Promise<APIGatewayProxyResult> => {
   console.log(event);
-  const { name } = event.queryStringParameters;
-  const path = `uploaded/${name}`;
 
-  const s3 = new S3({ region: 'eu-west-1'});
-  const params = {
-    Bucket: BUCKET,
-    Key: path,
-    Expires: 60,
-    ContentType: 'text/csv'
-  };
+  try {
+    const { name } = event.queryStringParameters;
+    if (!name) {
+      return httpResponse(STATUS_CODES.PRODUCT_DATA_IS_INVALID, 'Bad request');
+    }
+    const path = `${PATHES.UPLOADED}/${name}`;
+    const url = await simpleStorageService.getSignedUrl(path);
 
-  return await new Promise((res, rej) => {
-    s3.getSignedUrl('putObject', params, (err, url) => {
-      if (err) {
-        rej({
-          statusCode: 500,
-          body: err.message
-        });
-      }
-      console.log(url);
-      res({
-        statusCode: 200,
-        headers: {
-          'Access-Control-Allow-Origin': '*'
-        },
-        body: url
-      })
-    })
-  })
+    return httpResponse(STATUS_CODES.SUCCESS, url);
+  } catch (err) {
+    return httpResponse(STATUS_CODES.INTERNAL_SERVER_ERROR, err.message);
+  }
 }

@@ -1,5 +1,5 @@
 import { handleError } from '../utils/error';
-import { STATUS_CODES } from '../constants/constants';
+import { STATUS_CODES } from '../../../common/constants';
 
 describe('function handleError', () => {
   test('It should set all parameters from error', () => {

@@ -10,7 +10,7 @@
     "outDir": "lib",
     "esModuleInterop": true
   },
-  "include": ["./**/*.ts"],
+  "include": ["./**/*.ts", "../utils/http-response.ts"],
   "exclude": [
     "node_modules/**/*",
     ".serverless/**/*",

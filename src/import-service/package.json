@@ -7,6 +7,7 @@
     "deploy": "sls deploy",
     "deploy:importProductsFile": "sls deploy function -f importProductsFile",
     "deploy:importFileParser": "sls deploy function -f importFileParser",
+    "deploy:catalogItemsQueue": "sls deploy function -f catalogItemsQueue",
     "local:importProductsFile": "sls invoke local -f importProductsFile --data '{\"queryStringParameters\":{\"name\":\"test\"}}'",
     "local:importFileParser": "sls invoke local -f importFileParser",
     "test": "jest"
