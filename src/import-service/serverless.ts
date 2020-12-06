@@ -1,6 +1,18 @@
 import type { Serverless } from 'serverless/aws';
 import { PATHES } from '../common/constants';
 
+const responseProperties = {
+  ResponseParameters: {
+    'gatewayresponse.header.Access-Control-Allow-Origin': "'*'",
+    'gatewayresponse.header.Access-Control-Allow-Headers': "'*'",
+  },
+  RestApiId: {
+    Ref: 'ApiGatewayRestApi',
+  }
+};
+
+const responseType = 'AWS::ApiGateway::GatewayResponse';
+
 const serverlessConfiguration: Serverless = {
   service: {
     name: 'rsschool-node-in-aws-s3-fraltsov',
@@ -50,6 +62,38 @@ const serverlessConfiguration: Serverless = {
       }
     ]
   },
+  resources: {
+    Resources: {
+      GatewayResponseUnauthorized: {
+        Type: responseType,
+        Properties: {
+          ...responseProperties,
+          ResponseType: 'UNAUTHORIZED'
+        },
+      },
+      GatewayResponseAccessDenied: {
+        Type: responseType,
+        Properties: {
+          ...responseProperties,
+          ResponseType: 'ACCESS_DENIED',
+          ResponseTemplates: {
+            'application/json': '{"message":"$context.authorizer.message"}',
+          },
+        },
+      },
+      GatewayResponseInvalidToken: {
+        Type: responseType,
+        Properties: {
+          ...responseProperties,
+          ResponseType: 'AUTHORIZER_FAILURE',
+          ResponseTemplates: {
+            'application/json': '{"message":"Error: Invalid token"}',
+          },
+          StatusCode: 401
+        },
+      }
+    }
+  },
   functions: {
     importProductsFile: {
       handler: 'handler.importProductsFile',
@@ -59,6 +103,13 @@ const serverlessConfiguration: Serverless = {
             method: 'get',
             path: 'import',
             cors: true,
+            authorizer: {
+              name: 'basicAuthorizer',
+              type: 'token',
+              arn: '${cf:authorization-service-${self:provider.stage}.basicAuthorizerArn}',
+              resultTtlInSeconds: 0,
+              identitySource: 'method.request.header.Authorization'
+            },
             request: {
               parameters: {
                 querystrings: {
