@@ -1,7 +1,10 @@
 const express = require('express');
 const axios = require('axios').default;
+const cache = require('./utils/cache');
 
 const app = express();
+
+const CACHING_PATH = '/product/products';
 
 app.use(express.json());
 
@@ -12,6 +15,15 @@ app.all('/*', (req, res) => {
   console.log('body', body);
 
   try {
+    const cachingCondition = originalUrl === CACHING_PATH && method === 'GET';
+
+    if (cachingCondition) {
+      const cashed = cache.get();
+      if (cashed) {
+        return res.json(cashed);
+      }
+    }
+
     const recipient = originalUrl.split('/')[1];
     console.log('recipient', recipient);
 
@@ -19,9 +31,11 @@ app.all('/*', (req, res) => {
     console.log('recipientURL', recipientURL);
 
     if (recipientURL) {
+      const endpoint = originalUrl.replace(`/${recipient}`, '');
+      console.log(endpoint);
       const axiosConfig = {
         method,
-        url: `${recipientURL}${originalUrl}`,
+        url: `${recipientURL}${endpoint}`,
         ...(Object.keys(body || {}).length > 0 && { data: body }),
       };
 
@@ -31,22 +45,25 @@ app.all('/*', (req, res) => {
         .then((response) => {
           const { data } = response;
           console.log('response from recipient', data);
-          res.json(data);
+          if (cachingCondition) {
+            cache.set(data);
+          }
+          return res.json(data);
         })
         .catch((error) => {
           console.log('some error: ', JSON.stringify(error));
           if (error.response) {
             const { status, data } = error.response;
-            res.status(status).json(data);
+            return res.status(status).json(data);
           } else {
-            res.status(500).json({ error: error.message });
+            return res.status(500).json({ error: error.message });
           }
         });
     } else {
-      res.status(502).json({ error: 'Cannot process request' });
+      return res.status(502).json({ error: 'Cannot process request' });
     }
   } catch (error) {
-    console.error(error);
+    return res.status(500).json({ error: error.message });
   }
 });
 
